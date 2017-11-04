@@ -6,14 +6,15 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
 
-<LinearLayout
+<RelativeLayout
     android:layout_width="match_parent"
-    android:padding="@dimen/default_margin"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:padding="@dimen/default_margin"
+        android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
 
@@ -28,6 +29,10 @@ tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
             android:id="@+id/image_view_fuel"/>
 
     </RelativeLayout>
+
+    <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,6 +60,6 @@ tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
 
 </LinearLayout>

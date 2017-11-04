@@ -1,25 +1,35 @@
 package com.carino.hackathon.speedscreen.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.carino.hackathon.R;
 import com.carino.hackathon.speedscreen.model.MyTrip;
 import com.carino.hackathon.speedscreen.model.Trip;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.gson.Gson;
 import com.openxc.VehicleManager;
 import com.openxc.measurements.FuelConsumed;
@@ -35,7 +45,7 @@ import java.util.Date;
  * Created by alimertozdemir on 4.11.2017.
  */
 
-public class MyActiveTripFragment extends Fragment {
+public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = MyActiveTripFragment.class.getCanonicalName();
 
@@ -52,6 +62,11 @@ public class MyActiveTripFragment extends Fragment {
     private boolean onTrip = false;
     private MyTrip myTrips = new MyTrip();
     private Gson gson = new Gson();
+
+    private GoogleMap map;
+    MapView mapView;
+
+    private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
 
     public MyActiveTripFragment() {
         // Required empty public constructor
@@ -75,6 +90,14 @@ public class MyActiveTripFragment extends Fragment {
         mIgnitionStatusView = (TextView) rootView.findViewById(R.id.ignition_status);
         mParkingBrakeView = (TextView) rootView.findViewById(R.id.parking_brake);
 
+
+        // Gets the MapView from the XML layout and creates it
+        mapView = (MapView) rootView.findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+
+
+        mapView.getMapAsync(this);
+
         return rootView;
     }
 
@@ -92,6 +115,8 @@ public class MyActiveTripFragment extends Fragment {
             getActivity().unbindService(mConnection);
             mVehicleManager = null;
         }
+
+        mapView.onPause();
     }
 
     @Override
@@ -103,6 +128,8 @@ public class MyActiveTripFragment extends Fragment {
             Intent intent = new Intent(getActivity(), VehicleManager.class);
             getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
+
+        mapView.onResume();
     }
 
     // Connection
@@ -250,4 +277,33 @@ public class MyActiveTripFragment extends Fragment {
         mVehicleManager.removeListener(ParkingBrakeStatus.class, mParkingBrakeStatusListener);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION },
+                    PERMISSION_REQUEST_CODE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 }
