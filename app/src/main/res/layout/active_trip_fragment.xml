@@ -1,53 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:orientation="vertical"
+    tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:padding="@dimen/default_margin"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-
-        <ImageView android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/image_view_speed"/>
-
-        <ImageView android:layout_width="100dp"
-            android:layout_height="70dp"
-            android:layout_alignParentRight="true"
-            android:id="@+id/image_view_fuel"/>
-
-    </RelativeLayout>
-
     <com.google.android.gms.maps.MapView android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:gravity="bottom"
         android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/vehicle_speed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/fuel_consumption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/ignition_status"
@@ -56,10 +30,34 @@ tools:context="com.carino.hackathon.speedscreen.fragments.MyActiveTripFragment">
 
         <TextView
             android:id="@+id/parking_brake"
+            android:layout_below="@+id/ignition_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <com.carino.hackathon.speedscreen.gauges.ColorArcProgressBar
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="100dp"
+            android:layout_below="@+id/parking_brake"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/bar1"
+            app:is_need_content="true"
+            app:front_color1="@color/colorAccent"
+            app:max_value="180"
+            app:back_width="2dp"
+            app:front_width="10dp"
+            app:total_engle="270"
+            app:is_need_unit="true"
+            app:string_unit="km/h"
+            app:back_color="@android:color/darker_gray" />
+
+        <ImageView android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/parking_brake"
+            android:layout_alignParentRight="true"
+            android:id="@+id/image_view_fuel"/>
+
+    </RelativeLayout>
 </RelativeLayout>
 
 </LinearLayout>

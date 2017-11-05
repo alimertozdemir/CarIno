@@ -1,7 +1,6 @@
 package com.carino.hackathon.speedscreen.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +8,9 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
@@ -20,16 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.carino.hackathon.R;
+import com.carino.hackathon.speedscreen.gauges.ColorArcProgressBar;
 import com.carino.hackathon.speedscreen.model.MyTrip;
 import com.carino.hackathon.speedscreen.model.Trip;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.openxc.VehicleManager;
 import com.openxc.measurements.FuelConsumed;
@@ -56,6 +60,7 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
 
     private TextView mParkingBrakeView;
     private ImageView ivSpeed;
+    private ColorArcProgressBar caProgressBar;
     private ImageView ivFuelConsumption;
     private double fuelConsumption;
     private Trip trip;
@@ -84,12 +89,10 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.active_trip_fragment, container, false);
 
-        ivSpeed = (ImageView) rootView.findViewById(R.id.image_view_speed);
+        caProgressBar = (ColorArcProgressBar) rootView.findViewById(R.id.bar1);
         ivFuelConsumption = (ImageView) rootView.findViewById(R.id.image_view_fuel);
-        mFuelConsumptionView = (TextView) rootView.findViewById(R.id.fuel_consumption);
         mIgnitionStatusView = (TextView) rootView.findViewById(R.id.ignition_status);
         mParkingBrakeView = (TextView) rootView.findViewById(R.id.parking_brake);
-
 
         // Gets the MapView from the XML layout and creates it
         mapView = (MapView) rootView.findViewById(R.id.mapview);
@@ -209,7 +212,7 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
 
                         }
                     }
-                    //mIgnitionStatusView.setText("Ignition Status : " + );
+                    mIgnitionStatusView.setText("Ignition Status : " + ignitionStatus.getValue().enumValue());
                 }
             });
         }
@@ -248,16 +251,17 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
             final VehicleSpeed speed = (VehicleSpeed) measurement;
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    TextDrawable drawable = TextDrawable.builder()
+                    /*TextDrawable drawable = TextDrawable.builder()
                             .beginConfig()
                             .textColor(Color.WHITE)
                             .useFont(Typeface.DEFAULT)
-                            .fontSize(75) /* size in px */
+                            .fontSize(75)
                             .bold()
                             .toUpperCase()
                             .endConfig()
-                            .buildRoundRect(String.valueOf(speed.getValue().intValue()), Color.GREEN, 180);
-                    ivSpeed.setImageDrawable(drawable);
+                            .buildRoundRect(String.valueOf(speed.getValue().intValue()), Color.GREEN, 180);*/
+                    //ivSpeed.setImageDrawable(drawable);
+                    caProgressBar.setCurrentValues((float)speed.getValue().doubleValue());
                 }
             });
         }
@@ -287,11 +291,32 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
                         PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(true);
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+
+            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+            centerMapOnMyLocation(location);
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION },
                     PERMISSION_REQUEST_CODE_LOCATION);
+        }
+    }
+
+    private void centerMapOnMyLocation(Location location) {
+
+        if (location != null)
+        {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(17)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
     }
 
