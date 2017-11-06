@@ -52,8 +52,8 @@ public class ColorArcProgressBar extends View {
     private float curValues = 0;
     private float bgArcWidth = dipToPx(2);
     private float progressWidth = dipToPx(10);
-    private float textSize = dipToPx(30);
-    private float hintSize = dipToPx(15);
+    private float textSize = dipToPx(22);
+    private float hintSize = dipToPx(10);
     private float curSpeedSize = dipToPx(13);
     private int   aniSpeed = 1000;
     private float longdegree = dipToPx(13);
@@ -131,7 +131,7 @@ public class ColorArcProgressBar extends View {
 
     private void initView() {
 
-        diameter = 2 * getScreenWidth() / 6;
+        diameter = 2 * getScreenWidth() / 8;
         //弧形的矩阵区域
         bgRect = new RectF();
         bgRect.top = longdegree + progressWidth/2 + DEGREE_PROGRESS_DISTANCE;

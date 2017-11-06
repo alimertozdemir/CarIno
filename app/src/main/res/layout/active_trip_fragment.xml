@@ -25,37 +25,66 @@
 
         <TextView
             android:id="@+id/ignition_status"
+            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/parking_brake"
             android:layout_below="@+id/ignition_status"
+            android:layout_margin="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.carino.hackathon.speedscreen.gauges.ColorArcProgressBar
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginRight="100dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_below="@+id/parking_brake"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/bar1"
-            app:is_need_content="true"
-            app:front_color1="@color/colorAccent"
-            app:max_value="180"
-            app:back_width="2dp"
-            app:front_width="10dp"
-            app:total_engle="270"
-            app:is_need_unit="true"
-            app:string_unit="km/h"
-            app:back_color="@android:color/darker_gray" />
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
 
-        <ImageView android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:layout_below="@+id/parking_brake"
-            android:layout_alignParentRight="true"
-            android:id="@+id/image_view_fuel"/>
+            <com.carino.hackathon.speedscreen.gauges.ColorArcProgressBar
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/bar1"
+                android:layout_alignParentLeft="true"
+                app:is_need_content="true"
+                app:front_color1="#00ff00"
+                app:front_color2="#ffff00"
+                app:front_color3="#ff0000"
+                app:max_value="180"
+                app:back_width="2dp"
+                app:front_width="8dp"
+                app:total_engle="270"
+                app:is_need_unit="true"
+                app:is_need_title="true"
+                app:string_title="Speed"
+                app:string_unit="km/h"
+                app:back_color="@android:color/darker_gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content">
+
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_gas_station"
+                    android:id="@+id/image_view_fuel"/>
+
+                <TextView
+                    android:id="@+id/tvFuelConsumption"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/primaryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 </RelativeLayout>

@@ -61,7 +61,7 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
     private TextView mParkingBrakeView;
     private ImageView ivSpeed;
     private ColorArcProgressBar caProgressBar;
-    private ImageView ivFuelConsumption;
+    private TextView tvFuelConsumption;
     private double fuelConsumption;
     private Trip trip;
     private boolean onTrip = false;
@@ -90,7 +90,7 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
         View rootView = inflater.inflate(R.layout.active_trip_fragment, container, false);
 
         caProgressBar = (ColorArcProgressBar) rootView.findViewById(R.id.bar1);
-        ivFuelConsumption = (ImageView) rootView.findViewById(R.id.image_view_fuel);
+        tvFuelConsumption = (TextView) rootView.findViewById(R.id.tvFuelConsumption);
         mIgnitionStatusView = (TextView) rootView.findViewById(R.id.ignition_status);
         mParkingBrakeView = (TextView) rootView.findViewById(R.id.parking_brake);
 
@@ -226,18 +226,8 @@ public class MyActiveTripFragment extends Fragment implements OnMapReadyCallback
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     //TextDrawable drawable = TextDrawable.builder()
-                    //.buildRect(String.valueOf(fuelConsumed.getValue().doubleValue()), Color.RED);
-                    TextDrawable drawable = TextDrawable.builder()
-                            .beginConfig()
-                            .textColor(Color.WHITE)
-                            .useFont(Typeface.DEFAULT)
-                            .fontSize(30) /* size in px */
-                            .bold()
-                            .toUpperCase()
-                            .endConfig()
-                            .buildRect(String.valueOf(fuelConsumed.getValue().doubleValue()), Color.RED);
-                    ivFuelConsumption.setImageDrawable(drawable);
                     fuelConsumption = fuelConsumed.getValue().doubleValue();
+                    tvFuelConsumption.setText(String.valueOf(fuelConsumed.getValue().doubleValue()));
                     //mFuelConsumptionView.setText("Total Consumption (L): " + fuelConsumed.getValue().doubleValue());
                 }
             });
